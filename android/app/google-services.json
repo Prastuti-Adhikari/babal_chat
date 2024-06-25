@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "422208191330",
+    "project_id": "babal-chat-app-1",
+    "storage_bucket": "babal-chat-app-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422208191330:android:dc906870cd20b605f70a3b",
+        "android_client_info": {
+          "package_name": "com.example.babal_chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwkG4sXuPYIwbPWnyn2WqtXpt27QGUv0s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
