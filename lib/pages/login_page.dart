@@ -1,6 +1,7 @@
 import 'package:babal_chat/consts.dart';
 import 'package:babal_chat/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +13,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
+
+  String? email, password;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,11 +85,22 @@ class _LoginPageState extends State<LoginPage> {
                 height: MediaQuery.sizeOf(context).height * 0.1,
                 hintText: "Email",
                 validationRegEx: EMAIL_VALIDATION_REGEX,
+                onSaved: (value) {
+                  setState((){
+                    email = value;
+                  });
+                },
                 ),
                CustomFormField(
                 height: MediaQuery.sizeOf(context).height * 0.1,
                 hintText: "Password",
                 validationRegEx: PASSWORD_VALIDATION_REGEX,
+                obscureText: true,
+                onSaved: (value) {
+                  setState((){
+                    password = value;
+                  });
+                },
                 ),
                 _loginButton(),
             ],
@@ -101,7 +115,9 @@ class _LoginPageState extends State<LoginPage> {
         child: MaterialButton(
           onPressed: () {
             if(_loginFormKey.currentState?.validate() ?? false) {}
-            print("Login Successful!");
+             _loginFormKey.currentState?.save();
+             print(email);
+             print(password);
           },
           color: Theme.of(context).colorScheme.primary,
           child: const Text(
