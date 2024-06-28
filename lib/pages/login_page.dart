@@ -1,4 +1,6 @@
 import 'package:babal_chat/consts.dart';
+import 'package:babal_chat/services/auth_service.dart';
+import 'package:babal_chat/services/navigation_service.dart';
 import 'package:babal_chat/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -11,10 +13,21 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final GetIt _getIt = GetIt.instance;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
 
+  late AuthService _authService;
+  late NavigationService _navigationService;
+
   String? email, password;
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = _getIt.get<AuthService>();
+    _navigationService = _getIt.get<NavigationService>();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,11 +126,14 @@ class _LoginPageState extends State<LoginPage> {
       return SizedBox(
         width: MediaQuery.sizeOf(context).width,
         child: MaterialButton(
-          onPressed: () {
+          onPressed: () async {
             if(_loginFormKey.currentState?.validate() ?? false) {}
-             _loginFormKey.currentState?.save();
-             print(email);
-             print(password);
+              _loginFormKey.currentState?.save();
+              bool result = await _authService.login(email!,password!);
+              print(result);
+              if(result){
+                _navigationService.pushReplacementName("/home");
+              }else {}
           },
           color: Theme.of(context).colorScheme.primary,
           child: const Text(
