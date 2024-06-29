@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GetIt _getIt = GetIt.instance;
+  final GetIt _getIt = GetIt.instance; 
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
 
