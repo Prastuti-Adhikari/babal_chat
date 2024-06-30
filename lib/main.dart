@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(),
       ),
       initialRoute: _authService.user != null ? "/home" : "/login",
-      routes: _navigationService.routes as Map<String, WidgetBuilder>
+      routes: _navigationService.routes as Map<String, WidgetBuilder>,
     );
   }
 }

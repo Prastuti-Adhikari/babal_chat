@@ -1,4 +1,5 @@
 import 'package:babal_chat/consts.dart';
+import 'package:babal_chat/services/alert_service.dart';
 import 'package:babal_chat/services/auth_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
 import 'package:babal_chat/widgets/custom_form_field.dart';
@@ -19,6 +20,7 @@ class _LoginPageState extends State<LoginPage> {
 
   late AuthService _authService;
   late NavigationService _navigationService;
+  late AlertService _alertService;
 
   String? email, password;
 
@@ -27,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navigationService = _getIt.get<NavigationService>();
+    _alertService = _getIt.get<AlertService>();
   }
   @override
   Widget build(BuildContext context) {
@@ -133,7 +136,12 @@ class _LoginPageState extends State<LoginPage> {
               print(result);
               if(result){
                 _navigationService.pushReplacementName("/home");
-              }else {}
+              }else {
+                _alertService.showToast(
+                  text: "Failed to login, please try again!",
+                  icon: Icons.error,
+                );
+              }
           },
           color: Theme.of(context).colorScheme.primary,
           child: const Text(
