@@ -1,3 +1,4 @@
+import 'package:babal_chat/services/alert_service.dart';
 import 'package:babal_chat/services/auth_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,14 @@ class _HomepageState extends State<Homepage> {
 
   late AuthService _authService;
   late NavigationService _navigationService; 
+  late AlertService _alertService;
 
   @override
 void initState(){
   super.initState();
   _authService = _getIt.get<AuthService>();
+  _navigationService = _getIt.get<NavigationService>();
+  _alertService = _getIt.get<AlertService>();
 }
 
   Widget build(BuildContext context) {
@@ -31,6 +35,10 @@ void initState(){
         actions: [IconButton(onPressed: () async {
           bool result = await _authService.logout();
           if (result){
+           _alertService.showToast(
+            text: "Successfully logged out!",
+            icon: Icons.check,
+           );
             _navigationService.pushReplacementName("/login");
           }
         },
