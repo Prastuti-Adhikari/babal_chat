@@ -1,5 +1,5 @@
 name: babal_chat
-description: "A new Flutter project."
+description: "A chat app developed by Prastuti"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -44,6 +44,7 @@ dependencies:
   google_fonts: ^6.2.1
   delightful_toast: ^1.1.0
   get_it: ^7.7.0
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
