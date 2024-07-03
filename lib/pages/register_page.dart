@@ -1,11 +1,16 @@
 import 'dart:io';
 import 'package:babal_chat/consts.dart';
+import 'package:babal_chat/models/user_profile.dart';
+import 'package:babal_chat/services/alert_service.dart';
 import 'package:babal_chat/services/auth_service.dart';
+import 'package:babal_chat/services/database_service.dart';
 import 'package:babal_chat/services/media_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
+import 'package:babal_chat/services/storage_services.dart';
 import 'package:babal_chat/widgets/custom_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -21,6 +26,9 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
   late AuthService _authService;
   late MediaService _mediaService;
   late NavigationService _navigationService;
+  late StorageService _storageService;
+  late AlertService _alertService;
+  late DatabaseService _databaseService;
 
   String? email, password, name;
 
@@ -31,8 +39,11 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
   void initState() {
     super.initState();
     _mediaService = _getIt.get<MediaService>();
+    _alertService = _getIt.get<AlertService>();
     _navigationService = _getIt.get<NavigationService>();
     _authService = _getIt.get<AuthService>();
+    _storageService = _getIt.get<StorageService>();
+    _databaseService = _getIt.get<DatabaseService>();
   }
 
   @override
@@ -151,10 +162,10 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
   Widget _pfpSelectionField() {
     return GestureDetector(
       onTap: () async {
-        File? file = await _mediaService.getImageFromGallery();
+        File? file = await MediaService.getImageFromGallery();
         if(file != null) {
           setState((){
-            selectedImage =file;
+            selectedImage = file;
           });
         }
       },
@@ -178,11 +189,40 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
               if ((_registerFormKey.currentState?.validate() ?? false)) {
                 _registerFormKey.currentState?.save();
                 bool result = await _authService.signup(email!, password!);
-                if(result) {}
-                print(result);
+                if(result) {
+                  String? pfpURL = await _storageService.uploadUserPfp(
+                    file: selectedImage!,
+                    uid: _authService.user!.uid,
+                  );
+                  if(pfpURL != null) {
+                    await _databaseService.createUserProfile(
+                      userProfile: UserProfile(
+                        uid: _authService.user!.uid,
+                        name: name, 
+                        pfpURL: pfpURL
+                        ),
+                    );
+                    _alertService.showToast(
+                      text: "Account created successfully!",
+                      icon: Icons.check,
+                    );
+                    _navigationService.goBack();
+                    _navigationService.pushReplacementName("/home");
+                  }
+                  else{
+                    throw Exception("Unable to upload profile picture!");
+                  }
+                }
+                else{
+                  throw Exception("Unable to register user");
+                }
               }
             } catch (e){
               print (e);
+              _alertService.showToast(
+                text: "Failed to register, Please try again!",
+                icon: Icons.error,
+              );
             }
             setState((){
               isLoading = false;

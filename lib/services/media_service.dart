@@ -15,7 +15,6 @@ class MediaService{
     }
   }
 
-  dynamic getImageFromGallery() {}
-
+  static getImageFromGallery() {}
 }
 

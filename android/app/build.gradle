@@ -30,6 +30,7 @@ android {
     namespace = "com.example.babal_chat"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
