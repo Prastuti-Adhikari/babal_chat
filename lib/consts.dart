@@ -1,4 +1,4 @@
-final RegExp EMAIL_VALIDATION_REGEX =
+final RegExp EMAIL_VALIDATION_REGEX = 
     RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
 
 final RegExp PASSWORD_VALIDATION_REGEX =

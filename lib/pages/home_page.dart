@@ -26,6 +26,7 @@ void initState(){
   _alertService = _getIt.get<AlertService>();
 }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
