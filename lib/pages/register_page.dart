@@ -162,7 +162,7 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
   Widget _pfpSelectionField() {
     return GestureDetector(
       onTap: () async {
-        File? file = await MediaService.getImageFromGallery();
+        File? file = await  _mediaService.getImageFromGallery();
         if(file != null) {
           setState((){
             selectedImage = file;
@@ -253,7 +253,7 @@ final GlobalKey<FormState> _registerFormKey = GlobalKey();
             style: TextStyle(
               fontWeight: FontWeight.w800,
             ),
-                   ),
+           ),
          ),
         ],
       ));

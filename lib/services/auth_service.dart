@@ -48,7 +48,7 @@ User? get user{
       await _firebaseAuth.signOut();
       return true;
     }catch(e){
-      print(e);
+     print(e);
     }
     return false;
   }

@@ -19,8 +19,8 @@ final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
     return task.then(
       (p) {
       if (p.state == TaskState.success) {
-          return fileRef.getDownloadURL();
         }
+        return fileRef.getDownloadURL();
       },
     );
   }
