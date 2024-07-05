@@ -5,9 +5,10 @@ class ChatTile extends StatelessWidget {
   final UserProfile userProfile;
   final Function onTap;
 
-  const ChatTile({super.key, 
-  required this.userProfile,
-  required this.onTap,
+  const ChatTile({
+    super.key,
+    required this.userProfile,
+    required this.onTap,
   });
 
   @override
@@ -18,11 +19,11 @@ class ChatTile extends StatelessWidget {
       },
       dense: false,
       leading: CircleAvatar(
-        backgroundImage:NetworkImage(
-          userProfile.pfpURL!,
-        )
+        backgroundImage: userProfile.pfpURL != null
+            ? NetworkImage(userProfile.pfpURL!)
+            : const AssetImage('assets/images/default_avatar.png'), 
       ),
-      title: Text(userProfile.name!), 
-    );  
+      title: Text(userProfile.name ?? 'Unknown User'), 
+    );
   }
 }

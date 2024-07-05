@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GetIt _getIt = GetIt.instance; 
+  final GetIt _getIt = GetIt.instance;
 
   final GlobalKey<FormState> _loginFormKey = GlobalKey();
 
@@ -31,14 +31,16 @@ class _LoginPageState extends State<LoginPage> {
     _navigationService = _getIt.get<NavigationService>();
     _alertService = _getIt.get<AlertService>();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: _buildUI(),
-      );
+    );
   }
-  Widget _buildUI(){
+
+  Widget _buildUI() {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -47,18 +49,18 @@ class _LoginPageState extends State<LoginPage> {
         ),
         child: Column(
           children: [
-          _headerText(),
-          _loginForm(),
-          _createAnAccountLink(),
-        ],
-        )
+            _headerText(),
+            _loginForm(),
+            _createAnAccountLink(),
+          ],
         ),
-        );
+      ),
+    );
   }
 
   Widget _headerText() {
     return SizedBox(
-      width: MediaQuery.sizeOf(context).width, 
+      width: MediaQuery.of(context).size.width,
       child: const Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -73,106 +75,108 @@ class _LoginPageState extends State<LoginPage> {
           ),
           Text(
             "Have a babbal day :)",
-              style: TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: Colors.grey
+              color: Colors.grey,
             ),
-            ),
-      ],
+          ),
+        ],
       ),
     );
   }
 
   Widget _loginForm() {
     return Container(
-      height: MediaQuery.sizeOf(context).height * 0.40,
+      height: MediaQuery.of(context).size.height * 0.40,
       margin: EdgeInsets.symmetric(
-        vertical: MediaQuery.sizeOf(context).height * 0.05,
+        vertical: MediaQuery.of(context).size.height * 0.05,
       ),
-        child: Form(
-          key: _loginFormKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomFormField(
-                height: MediaQuery.sizeOf(context).height * 0.1,
-                hintText: "Email",
-                validationRegEx: EMAIL_VALIDATION_REGEX,
-                onSaved: (value) {
-                  setState((){
-                    email = value;
-                  });
-                },
-                ),
-               CustomFormField(
-                height: MediaQuery.sizeOf(context).height * 0.1,
-                hintText: "Password",
-                validationRegEx: PASSWORD_VALIDATION_REGEX,
-                obscureText: true,
-                onSaved: (value) {
-                  setState((){
-                    password = value;
-                  });
-                },
-                ),
-                _loginButton(),
-            ],
-          ),
-          ),
+      child: Form(
+        key: _loginFormKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomFormField(
+              height: MediaQuery.of(context).size.height * 0.1,
+              hintText: "Email",
+              validationRegEx: EMAIL_VALIDATION_REGEX,
+              onSaved: (value) {
+                setState(() {
+                  email = value;
+                });
+              },
+            ),
+            CustomFormField(
+              height: MediaQuery.of(context).size.height * 0.1,
+              hintText: "Password",
+              validationRegEx: PASSWORD_VALIDATION_REGEX,
+              obscureText: true,
+              onSaved: (value) {
+                setState(() {
+                  password = value;
+                });
+              },
+            ),
+            _loginButton(),
+          ],
+        ),
+      ),
     );
   }
 
-    Widget _loginButton() {
-      return SizedBox(
-        width: MediaQuery.sizeOf(context).width,
-        child: MaterialButton(
-          onPressed: () async {
-            if(_loginFormKey.currentState?.validate() ?? false) {}
-              _loginFormKey.currentState?.save();
-              bool result = await _authService.login(email!,password!);
-              // print(result);
-              if(result){
-                _navigationService.pushReplacementName("/home");
-              }else {
-                _alertService.showToast(
-                  text: "Failed to login, please try again!",
-                  icon: Icons.error,
-                );
-              }
-          },
-          color: Theme.of(context).colorScheme.primary,
-          child: const Text(
-            "Log in",
-            style: TextStyle(
-              color: Colors.white,
-            ),
+  Widget _loginButton() {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: MaterialButton(
+        onPressed: () async {
+          if (_loginFormKey.currentState?.validate() ?? false) {
+            _loginFormKey.currentState?.save();
+            bool result = await _authService.login(email!, password!);
+            if (result) {
+              _navigationService.pushReplacementName("/home");
+            } else {
+              _alertService.showToast(
+                text: "Failed to login, please try again!",
+                icon: Icons.error,
+              );
+            }
+          }
+        },
+        color: Theme.of(context).colorScheme.primary,
+        child: const Text(
+          "Log in",
+          style: TextStyle(
+            color: Colors.white,
           ),
-          ),
-      );
-    }
-
-    Widget _createAnAccountLink() {
-      return Expanded( child: Row(
-         mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-         const Text("Don't have an account?"),
-         GestureDetector(
-          onTap: () {
-            _navigationService.pushNamed("/register");
-          },
-           child: const Text(
-            "Sign Up",
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-            ),
-                   ),
-         ),
-        ],
-      ));
-    }
+        ),
+      ),
+    );
   }
+
+  Widget _createAnAccountLink() {
+    return Expanded(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const Text("Don't have an account?"),
+          GestureDetector(
+            onTap: () {
+              _navigationService.pushNamed("/register");
+            },
+            child: const Text(
+              "Sign Up",
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

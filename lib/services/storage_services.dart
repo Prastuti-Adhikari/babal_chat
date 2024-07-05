@@ -1,27 +1,38 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart' as p;
 
-class StorageService{
-
-final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+class StorageService {
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   StorageService() {}
 
   Future<String?> uploadUserPfp({
-    required File file, 
+    File? file,
+    Uint8List? bytes,
     required String uid,
   }) async {
+    if (file == null && bytes == null) {
+      throw ArgumentError('File and bytes cannot both be null');
+    }
+
     Reference fileRef = _firebaseStorage
       .ref('users/pfps')
-      .child('$uid${p.extension(file.path)}');
-    UploadTask task = fileRef.putFile(file);
-    return task.then(
-      (p) {
-      if (p.state == TaskState.success) {
-        }
-        return fileRef.getDownloadURL();
-      },
-    );
+      .child('$uid.jpg');
+
+    UploadTask task;
+    if (file != null) {
+      task = fileRef.putFile(file);
+    } else {
+      task = fileRef.putData(bytes!);
+    }
+
+    TaskSnapshot snapshot = await task;
+    if (snapshot.state == TaskState.success) {
+      return fileRef.getDownloadURL();
+    } else {
+      return null;
+    }
   }
 }

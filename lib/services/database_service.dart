@@ -3,34 +3,42 @@ import 'package:babal_chat/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 
-class DatabaseService{
+class DatabaseService {
   final GetIt _getIt = GetIt.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   late AuthService _authService;
 
-  CollectionReference? _usersCollection;
+  late CollectionReference<UserProfile> _usersCollection;
 
-  DatabaseService(){
+  DatabaseService() {
     _authService = _getIt.get<AuthService>();
     _setUpCollectionReferences();
   }
 
-  void _setUpCollectionReferences(){
-    _usersCollection = _firebaseFirestore.collection('users').withConverter<UserProfile>(
-      fromFirestore: (snapshots, _) => UserProfile.fromJson(
-        snapshots.data()!,
-        ),
-      toFirestore: (userProfile, _) => userProfile.toJson(),
-    );
+  void _setUpCollectionReferences() {
+    _usersCollection = _firebaseFirestore
+        .collection('users')
+        .withConverter<UserProfile>(
+          fromFirestore: (snapshots, _) =>
+              UserProfile.fromJson(snapshots.data()!),
+          toFirestore: (userProfile, _) => userProfile.toJson(),
+        );
   }
 
   Future<void> createUserProfile({required UserProfile userProfile}) async {
-    await _usersCollection?.doc(userProfile.uid).set(userProfile);
+    try {
+      await _usersCollection.doc(userProfile.uid).set(userProfile);
+      print('User profile created successfully for ${userProfile.uid}');
+    } catch (e) {
+      print('Error creating user profile: $e');
+      throw e;
+    }
   }
 
   Stream<QuerySnapshot<UserProfile>> getUserProfiles() {
-    return _usersCollection?.where("uid", isNotEqualTo: _authService.user!.uid)
-    .snapshots() as Stream<QuerySnapshot<UserProfile>>;
+    return _usersCollection
+        .where("uid", isNotEqualTo: _authService.user!.uid)
+        .snapshots();
   }
 }
