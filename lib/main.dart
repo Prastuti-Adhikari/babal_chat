@@ -17,8 +17,6 @@ Future<void> setup() async{
 }
 
 class MyApp extends StatelessWidget {
-  final GetIt _getIt = GetIt.instance;
-
   late NavigationService _navigationService;
   late AuthService _authService;
 
@@ -27,7 +25,8 @@ class MyApp extends StatelessWidget {
     _authService = _getIt.get<AuthService>();
   }
 
-  // This widget is the root of your application.
+  final GetIt _getIt = GetIt.instance;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
