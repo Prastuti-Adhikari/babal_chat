@@ -5,7 +5,6 @@ import 'package:babal_chat/services/auth_service.dart';
 import 'package:babal_chat/services/database_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
 import 'package:babal_chat/widgets/chat_tile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 

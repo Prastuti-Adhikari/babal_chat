@@ -4,12 +4,13 @@ import 'package:babal_chat/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   await setup();
   runApp(MyApp());
 }
- 
+
 Future<void> setup() async{
   WidgetsFlutterBinding.ensureInitialized();
   await setupFirebase();
