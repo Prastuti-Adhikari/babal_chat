@@ -35,7 +35,7 @@ class AlertService{
             ),
             );
         },
-        ).show(_navigationService.navigatorKey!.currentContext!,
+        ).show(_navigationService.navigatorKey.currentContext!,
         ); 
     } catch (e) {
       print(e);

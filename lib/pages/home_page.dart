@@ -85,8 +85,15 @@ Widget _buildUI() {
           itemCount: users.length,
           itemBuilder: (context, index) {
             UserProfile user = users[index].data();
-            return ChatTile(userProfile: user, 
-            onTap: () {}
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                ),
+              child: ChatTile(userProfile: user, 
+              onTap: () async {
+                
+              }
+              ),
             );
           },
         );

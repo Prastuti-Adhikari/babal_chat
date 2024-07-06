@@ -32,7 +32,7 @@ class DatabaseService {
       print('User profile created successfully for ${userProfile.uid}');
     } catch (e) {
       print('Error creating user profile: $e');
-      throw e;
+      rethrow;
     }
   }
 
