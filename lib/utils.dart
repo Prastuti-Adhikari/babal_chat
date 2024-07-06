@@ -6,6 +6,7 @@ import 'package:babal_chat/services/media_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
 import 'package:babal_chat/services/storage_services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 
 Future<void> setupFirebase() async{
@@ -34,3 +35,9 @@ Future<void> registerServices() async{
     DatabaseService(),
   );
 }
+  String generateChatID({required String uid1, required String uid2}) {
+    List uids = [uid1, uid2];
+    uids.sort();
+    String chatID =  uids.fold("", (id, uid) => "$id$uid");
+    return chatID;
+  }

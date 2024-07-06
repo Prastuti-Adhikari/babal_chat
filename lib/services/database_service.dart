@@ -1,44 +1,62 @@
+import 'package:babal_chat/models/chat.dart';
 import 'package:babal_chat/models/user_profile.dart';
 import 'package:babal_chat/services/auth_service.dart';
+import 'package:babal_chat/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 
-class DatabaseService {
+class DatabaseService{
   final GetIt _getIt = GetIt.instance;
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   late AuthService _authService;
+  late CollectionReference? _chatsCollection;
+  late CollectionReference? _usersCollection;
 
-  late CollectionReference<UserProfile> _usersCollection;
-
-  DatabaseService() {
+  DatabaseService(){
     _authService = _getIt.get<AuthService>();
     _setUpCollectionReferences();
   }
 
-  void _setUpCollectionReferences() {
-    _usersCollection = _firebaseFirestore
-        .collection('users')
-        .withConverter<UserProfile>(
-          fromFirestore: (snapshots, _) =>
-              UserProfile.fromJson(snapshots.data()!),
-          toFirestore: (userProfile, _) => userProfile.toJson(),
-        );
+  void _setUpCollectionReferences(){
+    _usersCollection = _firebaseFirestore.collection('users').withConverter<UserProfile>(
+      fromFirestore: (snapshots, _) => UserProfile.fromJson(
+        snapshots.data()!,
+        ),
+      toFirestore: (userProfile, _) => userProfile.toJson(),
+    );
+     _chatsCollection = _firebaseFirestore.collection('chats').withConverter<Chat>(
+        fromFirestore: (snapshots, _) => Chat.fromJson(snapshots.data()!), 
+        toFirestore: (chat, _) => chat.toJson()
+      );
   }
 
   Future<void> createUserProfile({required UserProfile userProfile}) async {
-    try {
-      await _usersCollection.doc(userProfile.uid).set(userProfile);
-      print('User profile created successfully for ${userProfile.uid}');
-    } catch (e) {
-      print('Error creating user profile: $e');
-      rethrow;
-    }
+    await _usersCollection?.doc(userProfile.uid).set(userProfile);
   }
 
   Stream<QuerySnapshot<UserProfile>> getUserProfiles() {
-    return _usersCollection
-        .where("uid", isNotEqualTo: _authService.user!.uid)
-        .snapshots();
+    return _usersCollection?.where("uid", isNotEqualTo: _authService.user!.uid)
+    .snapshots() as Stream<QuerySnapshot<UserProfile>>;
   }
+
+   Future<bool> checkChatExists(String uid1, String uid2) async{
+     String chatID = generateChatID(uid1: uid1, uid2: uid2);
+     final result = await _chatsCollection?.doc(chatID).get();
+     if (result != null) {
+      return result.exists;
+     }
+     return false;
+   }
+   
+   Future<void> createNewChat(String uid1, String uid2) async{
+    String chatID = generateChatID (uid1: uid1, uid2: uid2);
+    final docRef = _chatsCollection!.doc(chatID);
+    final chat = Chat(
+      id: chatID,
+      participants: [uid1, uid2],
+      messages: [],
+    );
+    await docRef.set(chat);
+   }
 }

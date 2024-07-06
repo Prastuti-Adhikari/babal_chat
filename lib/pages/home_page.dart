@@ -91,7 +91,16 @@ Widget _buildUI() {
                 ),
               child: ChatTile(userProfile: user, 
               onTap: () async {
-                
+                final chatExists = await _databaseService.checkChatExists(
+                  _authService.user!.uid, 
+                  user.uid!
+                );
+                if (!chatExists) {
+                  await _databaseService.createNewChat(
+                    _authService.user!.uid, 
+                    user.uid!,
+                  );
+                }
               }
               ),
             );
