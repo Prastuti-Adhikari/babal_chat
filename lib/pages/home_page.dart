@@ -1,9 +1,11 @@
 import 'package:babal_chat/models/user_profile.dart';
+import 'package:babal_chat/pages/chat_page.dart';
 import 'package:babal_chat/services/alert_service.dart';
 import 'package:babal_chat/services/auth_service.dart';
 import 'package:babal_chat/services/database_service.dart';
 import 'package:babal_chat/services/navigation_service.dart';
 import 'package:babal_chat/widgets/chat_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -101,6 +103,14 @@ Widget _buildUI() {
                     user.uid!,
                   );
                 }
+                _navigationService.push(
+                  MaterialPageRoute(builder: (context) {
+                    return ChatPage(
+                      chatUser: user,
+                    );
+                  },
+                  ),       
+                );
               }
               ),
             );
