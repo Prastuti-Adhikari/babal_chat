@@ -1,3 +1,4 @@
+import 'package:babal_chat/models/chat.dart';
 import 'package:babal_chat/models/message.dart';
 import 'package:babal_chat/models/user_profile.dart';
 import 'package:babal_chat/services/auth_service.dart';
@@ -52,18 +53,32 @@ class _ChatPageState extends State<ChatPage> {
         body: _buildUI(),
     );
   }
-
   Widget _buildUI(){
-    return DashChat(
-      messageOptions: const MessageOptions(
-        showOtherUsersAvatar: true,
-        showTime: true,
+    return StreamBuilder(stream: _databaseService.getChatData(
+      currentUser!.id, otherUser!.id), 
+      builder: (context, snapshot) {
+        Chat? chat = snapshot.data?.data();
+        List<ChatMessage> messages = [];
+        if(chat != null && chat.messages !=null){
+          messages = _generateChatMessagesList(
+            chat.messages!,
+          );
+        }
+        return DashChat(
+          messageOptions: const MessageOptions(
+          showOtherUsersAvatar: true,
+          showTime: true,
         ),
-        inputOptions: const InputOptions(alwaysShowSend: true),
+        inputOptions: const InputOptions(
+          alwaysShowSend: true,
+          
+          ),
       currentUser: currentUser!,
-      onSend: (message) {}, 
-      messages: [],
+      onSend: _sendMessage, 
+      messages: messages,
       );
+      },
+    );
   }
 
   Future<void> _sendMessage(ChatMessage chatMessage) async {
@@ -73,6 +88,23 @@ class _ChatPageState extends State<ChatPage> {
       messageType: MessageType.Text,
       sentAt: Timestamp.fromDate(chatMessage.createdAt),
     );
-    await _databaseService.sendChatMessage(currentUser!.id, otherUser!.id, message);
+    await _databaseService.sendChatMessage(
+      currentUser!.id,
+      otherUser!.id,
+      message,
+      );
   }
+
+   List<ChatMessage> _generateChatMessagesList(List<Message> messages){
+    List<ChatMessage> chatMessages = messages.map((m) {
+      return ChatMessage(
+        user: m.senderID == currentUser!.id ? currentUser! : otherUser!,
+        text: m.content!,
+        createdAt: m.sentAt!.toDate(),);
+    }).toList();
+    chatMessages.sort((a,b) {
+      return b.createdAt.compareTo(a.createdAt);
+    });
+    return chatMessages;
+   }
 }
