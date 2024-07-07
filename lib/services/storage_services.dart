@@ -17,9 +17,7 @@ class StorageService {
       throw ArgumentError('File and bytes cannot both be null');
     }
 
-    Reference fileRef = _firebaseStorage
-      .ref('users/pfps')
-      .child('$uid.jpg');
+    Reference fileRef = _firebaseStorage.ref('users/pfps').child('$uid.jpg');
 
     UploadTask task;
     if (file != null) {
@@ -36,12 +34,21 @@ class StorageService {
     }
   }
 
-//   Future<String?> uploadImageToChat({
-//     required File file, required String chatID
-//   }) async {
-//     Reference fileRef = _firebaseStorage
-//     .ref('chats/$chatID')
-//     .child('${DateTime.now().toIso8601String()}${p.extension(file.path)}');
-//   UploadTask task = fileRef.putFile(file);
-//   }
- }
+  Future<String?> uploadImageToChat({
+    required File file,
+    required String chatID,
+  }) async {
+    Reference fileRef = _firebaseStorage
+        .ref('chats/$chatID')
+        .child('${DateTime.now().toIso8601String()}${p.extension(file.path)}');
+
+    UploadTask task = fileRef.putFile(file);
+
+    TaskSnapshot snapshot = await task;
+    if (snapshot.state == TaskState.success) {
+      return fileRef.getDownloadURL();
+    } else {
+      return null;
+    }
+  }
+}
