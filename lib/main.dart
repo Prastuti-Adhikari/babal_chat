@@ -4,7 +4,6 @@ import 'package:babal_chat/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   await setup();
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
         textTheme: GoogleFonts.montserratTextTheme(),
       ),
       initialRoute: _authService.user != null ? "/home" : "/login",
-      routes: _navigationService.routes as Map<String, WidgetBuilder>,
+      routes: _navigationService.routes,
     );
   }
 }

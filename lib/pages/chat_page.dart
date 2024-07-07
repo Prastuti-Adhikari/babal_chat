@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:babal_chat/models/chat.dart';
 import 'package:babal_chat/models/message.dart';
 import 'package:babal_chat/models/user_profile.dart';
 import 'package:babal_chat/services/auth_service.dart';
 import 'package:babal_chat/services/database_service.dart';
+import 'package:babal_chat/services/media_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +27,7 @@ class _ChatPageState extends State<ChatPage> {
   final GetIt _getIt = GetIt.instance;
   late AuthService _authService;
   late DatabaseService _databaseService;
+  late MediaService _mediaService;
 
   ChatUser? currentUser, otherUser;
   
@@ -32,6 +36,7 @@ class _ChatPageState extends State<ChatPage> {
     super.initState();
     _authService = _getIt.get<AuthService>();
     _databaseService = _getIt.get<DatabaseService>();
+    _mediaService = _getIt.get<MediaService>();
     currentUser = ChatUser(
       id: _authService.user!.uid,
       firstName: _authService.user!.displayName,
@@ -69,9 +74,11 @@ class _ChatPageState extends State<ChatPage> {
           showOtherUsersAvatar: true,
           showTime: true,
         ),
-        inputOptions: const InputOptions(
+        inputOptions: InputOptions(
           alwaysShowSend: true,
-          
+          trailing: [
+            _mediaMessageButton(),
+          ]
           ),
       currentUser: currentUser!,
       onSend: _sendMessage, 
@@ -106,5 +113,20 @@ class _ChatPageState extends State<ChatPage> {
       return b.createdAt.compareTo(a.createdAt);
     });
     return chatMessages;
+   }
+
+   Widget _mediaMessageButton() {
+    return IconButton(
+      onPressed: () async {
+        File? file = await _mediaService.getImageFromGallery();
+        if(file != null) {
+          
+        }
+      }, 
+      icon:Icon(
+        Icons.image,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
    }
 }

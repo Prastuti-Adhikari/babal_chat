@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:path/path.dart' as p;
+import 'package:path/path.dart' as p;
 
 class StorageService {
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
@@ -35,4 +35,13 @@ class StorageService {
       return null;
     }
   }
-}
+
+//   Future<String?> uploadImageToChat({
+//     required File file, required String chatID
+//   }) async {
+//     Reference fileRef = _firebaseStorage
+//     .ref('chats/$chatID')
+//     .child('${DateTime.now().toIso8601String()}${p.extension(file.path)}');
+//   UploadTask task = fileRef.putFile(file);
+//   }
+ }

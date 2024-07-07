@@ -178,7 +178,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ? FileImage(selectedImage!)
             : webImage != null
                 ? MemoryImage(webImage!)
-                : NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
+                : const NetworkImage(PLACEHOLDER_PFP) as ImageProvider,
       ),
     );
   }
