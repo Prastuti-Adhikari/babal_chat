@@ -35,14 +35,24 @@ class StorageService {
   }
 
   Future<String?> uploadImageToChat({
-    required File file,
+    File? file,
+    Uint8List? bytes,
     required String chatID,
   }) async {
+    if (file == null && bytes == null) {
+      throw ArgumentError('File and bytes cannot both be null');
+    }
+
     Reference fileRef = _firebaseStorage
         .ref('chats/$chatID')
-        .child('${DateTime.now().toIso8601String()}${p.extension(file.path)}');
+        .child('${DateTime.now().toIso8601String()}${file != null ? p.extension(file.path) : ".jpg"}');
 
-    UploadTask task = fileRef.putFile(file);
+    UploadTask task;
+    if (file != null) {
+      task = fileRef.putFile(file);
+    } else {
+      task = fileRef.putData(bytes!);
+    }
 
     TaskSnapshot snapshot = await task;
     if (snapshot.state == TaskState.success) {

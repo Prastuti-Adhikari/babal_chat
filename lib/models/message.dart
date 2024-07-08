@@ -15,19 +15,26 @@ class Message {
     required this.sentAt,
   });
 
-  Message.fromJson(Map<String, dynamic> json) {
-    senderID = json['senderID'];
-    content = json['content'];
-    sentAt = json['sentAt'];
-    messageType = MessageType.values.byName(json['messageType']);
+  factory Message.fromJson(Map<String, dynamic> json) {
+    return Message(
+      senderID: json['senderID'] as String?,
+      content: json['content'] as String?,
+      sentAt: json['sentAt'] as Timestamp?,
+      messageType: json['messageType'] != null 
+        ? MessageType.values.firstWhere(
+            (e) => e.toString() == 'MessageType.${json['messageType']}',
+            orElse: () => MessageType.Text, // default to Text if no match
+          )
+        : null,
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['senderID'] = senderID;
-    data['content'] = content;
-    data['sentAt'] = sentAt;
-    data['messageType'] = messageType!.name;
-    return data;
+    return {
+      'senderID': senderID,
+      'content': content,
+      'sentAt': sentAt,
+      'messageType': messageType?.toString().split('.').last,
+    };
   }
 }

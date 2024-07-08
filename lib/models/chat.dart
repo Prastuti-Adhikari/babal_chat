@@ -11,18 +11,23 @@ class Chat {
     required this.messages,
   });
 
-  Chat.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    participants = List<String>.from(json['participants']);
-    messages =
-        List.from(json['messages']).map((m) => Message.fromJson(m)).toList();
+  factory Chat.fromJson(Map<String, dynamic> json) {
+    return Chat(
+      id: json['id'] as String?,
+      participants: (json['participants'] as List<dynamic>?)
+          ?.map((item) => item as String)
+          .toList(),
+      messages: (json['messages'] as List<dynamic>?)
+          ?.map((item) => Message.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['participants'] = participants;
-    data['messages'] = messages?.map((m) => m.toJson()).toList() ?? [];
-    return data;
+    return {
+      'id': id,
+      'participants': participants,
+      'messages': messages?.map((m) => m.toJson()).toList() ?? [],
+    };
   }
 }
